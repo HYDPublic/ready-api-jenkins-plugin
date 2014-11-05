@@ -2,6 +2,5 @@
   This view is used to render the installed plugins page.
 -->
 <div>
-  The Ready! API Plugin enables the configuration ServiceV Virt Servers, as well as start/stop Virts running
-  in those servers, enabling the safe use of Virts during the execution of Jenkins builds.
+  The Ready! API Plugin can be used to start and stop ServiceV Virts during your builds.
 </div>

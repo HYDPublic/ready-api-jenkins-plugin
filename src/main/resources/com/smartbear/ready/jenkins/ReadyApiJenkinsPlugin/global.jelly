@@ -12,9 +12,16 @@
     so it should be straightforward to find them.
   -->
   <f:section title="Ready! API Jenkins Plugin">
-    <f:entry title="French" field="useFrench"
-      description="Check if we should show help in French">
-      <f:checkbox />
+    <f:entry title="Java Home" field="javaHome"
+      description="Set the path to the Java Home (eg. '/usr/lib/java/jre-1.7_64').
+        If not set, the environment variable JAVA_HOME will be used, if it exists.
+        If neither value exists, 'java' will be called without a path.">
+      <f:textbox />
     </f:entry>
+    <f:entry title="VirtRunner Time-out" field="virtRunnerTimeout"
+          description="Time-out for running Virts (in seconds). This is the maximum time Virts should be allowed to run.
+            After the time expires, the Virts process will be killed.">
+          <f:textbox />
+        </f:entry>
   </f:section>
 </j:jelly>
