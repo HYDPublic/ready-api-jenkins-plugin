@@ -58,6 +58,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                 pathToProjectFile, virtNames, getDescriptor().getJavaHome());
                 new ProcessKiller(process, getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
                         .killAfterTimeout();
+                ProcessKeeper.addProcess(process);
             } catch (Exception e) {
                 e.printStackTrace();
                 listener.getLogger().println("Could not run virts! Problem: " + e);
