@@ -18,14 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public class ReadyApiJenkinsPlugin extends Builder {
+public class ReadyApiJenkinsVirtStarter extends Builder {
 
     private final String virtNames;
     private final String pathToProjectFile;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public ReadyApiJenkinsPlugin(String virtNames, String pathToProjectFile) {
+    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
     }
@@ -48,7 +48,7 @@ public class ReadyApiJenkinsPlugin extends Builder {
 
         listener.getLogger().println("Path to project file: " + pathToProjectFile + "");
 
-        URL readyApiLibs = ReadyApiJenkinsPlugin.class.getResource("/ready-api-libs/ready-api-runners.jar");
+        URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
 
         if (readyApiLibs == null) {
             listener.getLogger().println("ReadyApi Libs not found!");
@@ -81,7 +81,7 @@ public class ReadyApiJenkinsPlugin extends Builder {
     }
 
     /**
-     * Descriptor for {@link ReadyApiJenkinsPlugin}. Used as a singleton.
+     * Descriptor for {@link ReadyApiJenkinsVirtStarter}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      * <p/>
      * <p/>
