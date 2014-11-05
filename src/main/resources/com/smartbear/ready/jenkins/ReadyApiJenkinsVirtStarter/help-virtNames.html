@@ -1,10 +1,22 @@
 <div>
-    The virt name(s) to run.
+    The name of the virt(s) to run.
     <p/>
     If not specified, runs all virts with their default settings.
     <p/>
-    Use the following syntax:<br/>
+    Use the following syntax to specify this value:<br/>
     <code>
       [virtName[:port[:path]]+,]
     </code>
+
+    <p/>
+    Once the Virts have started, the build will continue.
+    <p/>
+    The Virt(s) will be stopped when either the timeout expires (see below) or when the post-build step
+    <em>Stop ServiceV Virts</em> runs, if it is configured in your build.
+
+    <p/>
+    To configure the timeout for running Virts, please go to <code>Manage Jenkins - Configure System</code>, and see
+    section <em>Ready! API Jenkins Plugin</em>.
+
+
 </div>
