@@ -1,5 +1,6 @@
 package com.smartbear.ready.jenkins;
 
+import hudson.AbortException;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -42,10 +43,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
-
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
         listener.getLogger().println("Path to project file: " + pathToProjectFile + "");
 
         URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
@@ -66,7 +64,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                 if (process != null) {
                     process.destroy();
                 }
-                return false;
+                throw new AbortException("Could not start ServiceV Virt(s).");
             }
         }
         return true;
@@ -83,10 +81,6 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     /**
      * Descriptor for {@link ReadyApiJenkinsVirtStarter}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
-     * <p/>
-     * <p/>
-     * See <tt>src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
-     * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
@@ -111,7 +105,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         }
 
         /**
-         * Performs on-the-fly validation of the form field 'name'.
+         * Performs on-the-fly validation of the form field.
          *
          * @param value This parameter receives the value that the user has typed.
          * @return Indicates the outcome of the validation. This is sent to the browser.
