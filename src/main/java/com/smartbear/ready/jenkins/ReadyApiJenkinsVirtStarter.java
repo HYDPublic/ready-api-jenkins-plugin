@@ -62,7 +62,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                 } else {
                     new ProcessKiller(process, getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
                             .killAfterTimeout();
-                    ProcessKeeper.addProcess(process);
+                    ProcessKeeper.addProcess(build.getId(), process);
                 }
             } catch (Exception e) {
                 e.printStackTrace(listener.getLogger());
