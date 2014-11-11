@@ -2,6 +2,7 @@ package com.smartbear.ready.jenkins;
 
 import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -55,13 +56,16 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
             try {
                 process = new ProcessRunner()
                         .run(listener.getLogger(),
-                                pathToProjectFile, virtNames, getDescriptor().getJavaHome());
-                new ProcessKiller(process, getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
-                        .killAfterTimeout();
-                ProcessKeeper.addProcess(process);
+                                getProjectPath(build.getWorkspace()), virtNames, getDescriptor().getJavaHome());
+                if(process == null){
+                    throw new AbortException("Could not start ServiceV Virt(s) process.");
+                } else {
+                    new ProcessKiller(process, getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
+                            .killAfterTimeout();
+                    ProcessKeeper.addProcess(process);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
-                listener.getLogger().println("Could not run virts! Problem: " + e);
+                e.printStackTrace(listener.getLogger());
                 if (process != null) {
                     process.destroy();
                 }
@@ -69,6 +73,24 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
             }
         }
         return true;
+    }
+
+    private String getProjectPath(FilePath workspace) {
+        File file = new File(pathToProjectFile);
+        if (file.exists()) {
+            return file.getAbsolutePath();
+        }
+        try {
+            file = new File(new File(workspace.toURI()), pathToProjectFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (file.exists()) {
+            return file.getAbsolutePath();
+        }
+        return getPathToProjectFile();
     }
 
     // Overridden for better type safety.
