@@ -1,11 +1,26 @@
-.idea/
-out/
-lib/
-target/
-work/
-
-*.jar
+# Project files
 *.iml
-*.class
-.project
+*.idea
+.settings/
 .classpath
+.project
+*-ide-plugin.xml
+
+# Logs
+*.log
+
+# Build folders
+target/
+
+# plugin / extension folders
+soapui/ext
+soapui/plugins
+
+# Altered tests
+soapui-pro/test/
+soapui-pro/ext
+
+# Misc
+proguard-mapping.txt
+
+ready-api-ui/src/.install4j
