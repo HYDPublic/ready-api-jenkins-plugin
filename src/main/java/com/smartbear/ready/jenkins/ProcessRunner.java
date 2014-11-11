@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class ProcessRunner {
@@ -21,9 +24,15 @@ public class ProcessRunner {
         out.println("Using java: " + java);
         out.println("Classpath: " + jar.getFile());
         out.println("Project File: " + new File(pathToProjectFile).exists());
-        ProcessBuilder pb = new ProcessBuilder(java, "-cp", jar.getFile(),
-                VIRT_RUNNER_CLASS,
-                "-m", virtNames, "-p", pathToProjectFile)
+        List<String> parameters = new ArrayList<String>();
+        parameters.addAll(Arrays.asList(java, "-cp", jar.getFile(), VIRT_RUNNER_CLASS));
+        if(StringUtils.isNotEmpty(virtNames)) {
+            parameters.addAll(Arrays.asList("-m", virtNames));
+        }
+        if(StringUtils.isNotEmpty(pathToProjectFile)) {
+            parameters.addAll(Arrays.asList("-p", pathToProjectFile));
+        }
+        ProcessBuilder pb = new ProcessBuilder(parameters)
                 .inheritIO()
                 .directory(new File("."));
 
