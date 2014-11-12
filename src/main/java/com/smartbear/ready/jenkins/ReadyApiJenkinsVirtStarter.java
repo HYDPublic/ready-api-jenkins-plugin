@@ -24,12 +24,14 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
 
     private final String virtNames;
     private final String pathToProjectFile;
+    private final String projectFilePassword;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile) {
+    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
+        this.projectFilePassword = projectFilePassword;
     }
 
     /**
@@ -41,6 +43,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
 
     public String getPathToProjectFile() {
         return pathToProjectFile;
+    }
+
+    public String getProjectFilePassword() {
+        return projectFilePassword;
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
             try {
                 process = new ProcessRunner()
                         .run(listener.getLogger(),
-                                getProjectPath(build.getWorkspace()), virtNames, getDescriptor().getJavaHome());
+                                getProjectPath(build.getWorkspace()), virtNames, projectFilePassword, getDescriptor().getJavaHome());
                 if(process == null){
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
                 } else {

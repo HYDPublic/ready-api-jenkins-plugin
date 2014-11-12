@@ -24,7 +24,7 @@ public class ProcessRunner {
     public static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
-    public Process run(final PrintStream out, String pathToProjectFile, String virtNames, String javaHome)
+    public Process run(final PrintStream out, String pathToProjectFile, String virtNames, String projectFilePassword, String javaHome)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
         String java = javaFrom(javaHome, System.getenv("JAVA_HOME"));
@@ -35,6 +35,9 @@ public class ProcessRunner {
         }
         if (StringUtils.isNotEmpty(pathToProjectFile)) {
             parameters.addAll(Arrays.asList("-p", pathToProjectFile));
+        }
+        if (StringUtils.isNotEmpty(projectFilePassword)) {
+            parameters.addAll(Arrays.asList("-x", projectFilePassword));
         }
         ProcessBuilder pb = new ProcessBuilder(parameters)
                 .redirectErrorStream(true)
