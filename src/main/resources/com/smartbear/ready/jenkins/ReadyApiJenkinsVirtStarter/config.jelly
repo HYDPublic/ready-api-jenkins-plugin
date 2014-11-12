@@ -13,44 +13,58 @@
     <f:entry title="Virt Names" field="virtNames">
         <f:textbox/>
     </f:entry>
-    <f:entry title="Path to project file" field="pathToProjectFile" description="Specify the path or URL to your Ready! API (or SoapUI) project file which contains the Virt(s) you wish to use.">
+    <f:entry title="Path to project file" field="pathToProjectFile"
+             description="Specify the path or URL to your Ready! API (or SoapUI) project file which contains the Virt(s) you wish to use.">
         <f:textbox/>
     </f:entry>
-    <f:entry title="Project file password" field="projectFilePassword" description="The password that the project file is encrypted with. Leave blank if the project is not encrypted.">
+    <f:entry title="Project file password" field="projectFilePassword"
+             description="The password that the project file is encrypted with. Leave blank if the project is not encrypted.">
         <f:password/>
     </f:entry>
 
     <f:advanced>
-        <f:entry title="Path to settings file" field="pathToSettingsFile" description="Specify the path or URL to your Ready! API (or SoapUI) settings file if the default path shouldn't be used.">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="Settings file password" field="settingsFilePassword" description="The password that the settings file is encrypted with. Leave blank if the settings are not encrypted.">
-            <f:password/>
-        </f:entry>
-        <f:entry title="Save after run" field="saveAfterRun" description="Save the project file when closing the Virts.">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry title="Virt startup time-out" field="startupTimeOut" description="Number of seconds to wait for the Virt(s) to start up before failing the build.">
-            <f:number default="30"/>
-        </f:entry>
-        <f:entry title="Sends usage statistics" field="enableUsageStatistics">
-            <f:checkbox default="true"/>
-        </f:entry>
-        <f:entry title="Log VirtRunner output" field="enableVirtRunnerOutput" description="Print the output from the VirtRunner to the job's log.">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry title="System Properties" field="systemProperties" description="One per line in the form name=value">
-            <f:textarea name="systemProperties"/>
-        </f:entry>
-        <f:entry title="Global Properties" field="globalProperties" description="One per line in the form name=value">
-            <f:textarea name="globalProperties"/>
-        </f:entry>
-        <f:entry title="Project Properties" field="projectProperties" description="One per line in the form name=value">
-            <f:textarea name="projectProperties"/>
-        </f:entry>
-        <f:entry title="Additional Command Line" field="additionalCommandLine" description="One per line">
-            <f:textarea/>
-        </f:entry>
+        <f:section title="Advanced ServiceV Options">
+            <f:entry title="Path to settings file" field="pathToSettingsFile"
+                     description="Specify the path or URL to your Ready! API (or SoapUI) settings file if the default path shouldn't be used.">
+                <f:textbox/>
+            </f:entry>
+            <f:entry title="Settings file password" field="settingsFilePassword"
+                     description="The password that the settings file is encrypted with. Leave blank if the settings are not encrypted.">
+                <f:password/>
+            </f:entry>
+            <f:entry title="Virt startup time-out" field="startupTimeOut"
+                     description="Number of seconds to wait for the Virt(s) to start up before failing the build.">
+                <f:number default="30"/>
+            </f:entry>
+            <f:entry title="Save after run" field="saveAfterRun"
+                     description="Save the project file when closing the Virts.">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry title="Sends usage statistics" field="enableUsageStatistics">
+                <f:checkbox default="true"/>
+            </f:entry>
+            <f:entry title="Log VirtRunner output" field="enableVirtRunnerOutput"
+                     description="Print the output from the VirtRunner to the job's log.">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry title="Additional Command Line" field="additionalCommandLine" description="One per line">
+                <f:textarea/>
+            </f:entry>
+            <f:section title="Properties">
+                <f:entry title="System Properties" field="systemProperties"
+                         description="One per line in the form name=value">
+                    <f:textarea name="systemProperties"/>
+                </f:entry>
+                <f:entry title="Global Properties" field="globalProperties"
+                         description="One per line in the form name=value">
+                    <f:textarea name="globalProperties"/>
+                </f:entry>
+                <f:entry title="Project Properties" field="projectProperties"
+                         description="One per line in the form name=value">
+                    <f:textarea name="projectProperties"/>
+                </f:entry>
+            </f:section>
+        </f:section>
     </f:advanced>
 
 </j:jelly>

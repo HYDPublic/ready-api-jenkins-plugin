@@ -44,14 +44,14 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                       String projectFilePassword,
                                       String pathToSettingsFile,
                                       String settingsFilePassword,
-                                      boolean saveAfterRun,
                                       int startupTimeOut,
+                                      boolean saveAfterRun,
                                       boolean enableUsageStatistics,
                                       boolean enableVirtRunnerOutput,
+                                      String additionalCommandLine,
                                       String systemProperties,
                                       String globalProperties,
-                                      String projectProperties,
-                                      String additionalCommandLine) {
+                                      String projectProperties) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
         this.projectFilePassword = projectFilePassword;
