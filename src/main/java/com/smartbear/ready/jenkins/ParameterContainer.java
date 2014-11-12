@@ -8,6 +8,7 @@ public class ParameterContainer {
     private String pathToSettingsFile;
     private String settingsFilePassword;
     private boolean saveAfterRun;
+    private int startupTimeOut;
 
     public String getVirtNames() {
         return virtNames;
@@ -35,6 +36,10 @@ public class ParameterContainer {
 
     public boolean isSaveAfterRun() {
         return saveAfterRun;
+    }
+
+    public int getStartupTimeOut() {
+        return startupTimeOut;
     }
 
     public static class Builder {
@@ -76,6 +81,11 @@ public class ParameterContainer {
 
         public Builder withSaveAfterRun(boolean saveAfterRun) {
             parameterContainer.saveAfterRun = saveAfterRun;
+            return this;
+        }
+
+        public Builder withStartupTimeOut(int startupTimeOut) {
+            parameterContainer.startupTimeOut = startupTimeOut;
             return this;
         }
     }

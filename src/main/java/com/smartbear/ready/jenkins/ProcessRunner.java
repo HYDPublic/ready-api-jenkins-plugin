@@ -72,7 +72,7 @@ public class ProcessRunner {
         };
         final Future<Boolean> future = executor.submit(parseTask);
         try {
-            final Boolean allRunning = future.get(30, TimeUnit.SECONDS);
+            final Boolean allRunning = future.get(params.getStartupTimeOut(), TimeUnit.SECONDS);
             if (!allRunning) {
                 process.destroy();
                 return null;

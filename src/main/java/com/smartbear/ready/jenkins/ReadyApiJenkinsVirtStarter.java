@@ -28,16 +28,18 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     private final String pathToSettingsFile;
     private final String settingsFilePassword;
     private final boolean saveAfterRun;
+    private final int startupTimeOut;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword, String pathToSettingsFile, String settingsFilePassword, boolean saveAfterRun) {
+    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword, String pathToSettingsFile, String settingsFilePassword, boolean saveAfterRun, int startupTimeOut) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
         this.projectFilePassword = projectFilePassword;
         this.pathToSettingsFile = pathToSettingsFile;
         this.settingsFilePassword = settingsFilePassword;
         this.saveAfterRun = saveAfterRun;
+        this.startupTimeOut = startupTimeOut;
     }
 
     /**
@@ -67,6 +69,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return saveAfterRun;
     }
 
+    public int getStartupTimeOut() {
+        return startupTimeOut;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
         URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
@@ -86,6 +92,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                         .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build.getWorkspace()))
                                         .withSettingsFilePassword(settingsFilePassword)
                                         .withSaveAfterRun(saveAfterRun)
+                                        .withStartupTimeOut(startupTimeOut)
                                         .build());
                 if (process == null) {
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
