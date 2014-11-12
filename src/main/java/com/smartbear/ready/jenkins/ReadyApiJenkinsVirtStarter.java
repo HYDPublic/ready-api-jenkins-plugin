@@ -60,7 +60,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                 if(process == null){
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
                 } else {
-                    new ProcessKiller(process, getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
+                    new ProcessKiller(process, build.getId(), getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
                             .killAfterTimeout();
                     ProcessKeeper.addProcess(build.getId(), process);
                 }

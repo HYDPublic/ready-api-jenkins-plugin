@@ -6,7 +6,7 @@ public class ProcessKiller {
 
     private final Thread thread;
 
-    public ProcessKiller(final Process process, final long timeoutInMillis, final PrintStream out) {
+    public ProcessKiller(final Process process, final String buildId, final long timeoutInMillis, final PrintStream out) {
         thread = new Thread("ready-api-process-killer") {
             @Override
             public void run() {
@@ -20,6 +20,7 @@ public class ProcessKiller {
                     } while (expiredTime < timeoutInMillis);
                     out.println("VirtRunner timeout! Killing Virts process.");
                     process.destroy();
+                    ProcessKeeper.removeProcess(buildId, process);
                 } catch (Exception e) {
                     out.println(e);
                     e.printStackTrace();

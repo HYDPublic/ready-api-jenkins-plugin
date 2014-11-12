@@ -17,13 +17,25 @@ public class ProcessKeeper {
     }
 
     public static boolean killProcess(String buildId, PrintStream out) throws IllegalStateException {
+        boolean anyVirtStopped = false;
+        boolean allVirtStopped = true;
         for (Process process : processes.get(buildId)) {
+
+            // If process is not running, do not try to stop it
+            try {
+                process.exitValue();
+                allVirtStopped = false;
+                continue;
+            } catch (IllegalThreadStateException ignore) {
+            }
+
             // this should be forwarded to the process
             try {
                 process.getOutputStream().write("\n".getBytes());
                 out.println("Sent the termination signal to the process");
             } catch (IOException e) {
-                e.printStackTrace(out);
+                allVirtStopped = false;
+                continue;
             }
 
             try {
@@ -44,9 +56,14 @@ public class ProcessKeeper {
                 out.println("Process had not been terminated! Destroying it!");
                 process.destroy();
             }
+            anyVirtStopped = true;
         }
         processes.removeAll(buildId);
-        return true;
+        return anyVirtStopped && allVirtStopped;
+    }
+
+    public static void removeProcess(String buildId, Process process) {
+        processes.remove(buildId, process);
     }
 
     private static class InterruptScheduler extends TimerTask {

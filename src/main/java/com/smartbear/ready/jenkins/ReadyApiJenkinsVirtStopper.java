@@ -30,9 +30,9 @@ public class ReadyApiJenkinsVirtStopper extends Recorder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("Trying to stop ServiceV Virts");
-        boolean stoppedAnyVirt = ProcessKeeper.killProcess(build.getId(), listener.getLogger());
-        if (!stoppedAnyVirt && breakBuildIfNoVirtStopped) {
-            listener.getLogger().println("FAILURE: Did not find any ServiceV Virt to stop!");
+        boolean stoppedAllVirts = ProcessKeeper.killProcess(build.getId(), listener.getLogger());
+        if (!stoppedAllVirts && breakBuildIfNoVirtStopped) {
+            listener.getLogger().println("FAILURE: Did not find all ServiceV Virt to stop!");
             build.setResult(Result.FAILURE);
         }
         listener.getLogger().println("Successfully stopped all ServiceV Virts");
