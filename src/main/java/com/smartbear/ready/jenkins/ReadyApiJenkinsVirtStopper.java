@@ -34,8 +34,9 @@ public class ReadyApiJenkinsVirtStopper extends Recorder {
         if (!stoppedAllVirts && breakBuildIfNoVirtStopped) {
             listener.getLogger().println("FAILURE: Did not find all ServiceV Virt to stop!");
             build.setResult(Result.FAILURE);
+        } else {
+            listener.getLogger().println("Successfully stopped all ServiceV Virts");
         }
-        listener.getLogger().println("Successfully stopped all ServiceV Virts");
         return true;
     }
 

@@ -2,14 +2,21 @@ package com.smartbear.ready.jenkins;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessRunner {
 
@@ -17,27 +24,67 @@ public class ProcessRunner {
     public static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
-    public Process run(PrintStream out, String pathToProjectFile, String virtNames, String javaHome)
+    public Process run(final PrintStream out, String pathToProjectFile, String virtNames, String javaHome)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
         String java = javaFrom(javaHome, System.getenv("JAVA_HOME"));
-        out.println("Using java: " + java);
-        out.println("Classpath: " + jar.getFile());
-        out.println("Project File: " + new File(pathToProjectFile).exists());
         List<String> parameters = new ArrayList<String>();
         parameters.addAll(Arrays.asList(java, "-cp", jar.getFile(), VIRT_RUNNER_CLASS));
-        if(StringUtils.isNotEmpty(virtNames)) {
+        if (StringUtils.isNotEmpty(virtNames)) {
             parameters.addAll(Arrays.asList("-m", virtNames));
         }
-        if(StringUtils.isNotEmpty(pathToProjectFile)) {
+        if (StringUtils.isNotEmpty(pathToProjectFile)) {
             parameters.addAll(Arrays.asList("-p", pathToProjectFile));
         }
         ProcessBuilder pb = new ProcessBuilder(parameters)
-                .inheritIO()
+                .redirectErrorStream(true)
                 .directory(new File("."));
 
-        out.println("Here we start the process!!!!!!!!!!!!");
-        return pb.start();
+        final Process process = pb.start();
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Callable<Boolean> parseTask = new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                String s;
+                while ((s = bufferedReader.readLine()) != null) {
+                    out.println(s);
+                    if (s.contains("All runners confirmed to be running!")) {
+                        return true;
+                    } else if (s.contains("Failed to get all runners started! Problems may occur.")) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        };
+        final Future<Boolean> future = executor.submit(parseTask);
+        try {
+            final Boolean allRunning = future.get(15, TimeUnit.SECONDS);
+            if (!allRunning) {
+                process.destroy();
+                return null;
+            }
+        } catch (Exception e) {
+            out.println("Time out waiting for Virts to start");
+            process.destroy();
+            return null;
+        } finally {
+            executor.shutdown();
+        }
+        new Thread(new Runnable() {
+            public void run() {
+                String s;
+                try {
+                    while ((s = bufferedReader.readLine()) != null) {
+                        out.println(s);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace(out);
+                }
+            }
+        }).start();
+        return process;
     }
 
     private String javaFrom(String... candidateJavaHomes) {
@@ -50,11 +97,5 @@ public class ProcessRunner {
             }
         }
         return "java";
-    }
-
-    public static void main(String[] args) throws Exception {
-        Process p = new ProcessRunner().run(System.out, "D:\\SoapUI Projects\\Weather-soapui-project.xml", "Virt2", null);
-        Thread.sleep(20000);
-        p.destroy();
     }
 }

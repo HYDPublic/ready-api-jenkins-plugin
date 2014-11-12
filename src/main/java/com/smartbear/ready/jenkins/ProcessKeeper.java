@@ -4,9 +4,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class ProcessKeeper {
 
@@ -31,7 +31,9 @@ public class ProcessKeeper {
 
             // this should be forwarded to the process
             try {
-                process.getOutputStream().write("\n".getBytes());
+                final OutputStream outputStream = process.getOutputStream();
+                outputStream.write("\n".getBytes());
+                outputStream.flush();
                 out.println("Sent the termination signal to the process");
             } catch (IOException e) {
                 allVirtStopped = false;
@@ -41,8 +43,7 @@ public class ProcessKeeper {
             try {
                 // Set a timer to interrupt the process if it does not return within the timeout period
                 // Could be done with java8 waitFor(timeout, unit), but we probably don't want to require java8 yet
-                Timer timer = new Timer();
-                timer.schedule(new InterruptScheduler(Thread.currentThread()), 5000);
+                new Timer().schedule(new InterruptScheduler(Thread.currentThread()), 5000);
                 process.waitFor();
                 out.println("Done waiting for the process to die graciously");
             } catch (InterruptedException e) {
@@ -64,20 +65,6 @@ public class ProcessKeeper {
 
     public static void removeProcess(String buildId, Process process) {
         processes.remove(buildId, process);
-    }
-
-    private static class InterruptScheduler extends TimerTask {
-        Thread target = null;
-
-        public InterruptScheduler(Thread target) {
-            this.target = target;
-        }
-
-        @Override
-        public void run() {
-            target.interrupt();
-        }
-
     }
 
 
