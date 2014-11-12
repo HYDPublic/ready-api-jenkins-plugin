@@ -39,6 +39,18 @@
         <f:entry title="Log VirtRunner output" field="enableVirtRunnerOutput" description="Print the output from the VirtRunner to the job's log.">
             <f:checkbox/>
         </f:entry>
+        <f:entry title="System Properties" field="systemProperties" description="One per line in the form name=value">
+            <f:textarea name="systemProperties"/>
+        </f:entry>
+        <f:entry title="Global Properties" field="globalProperties" description="One per line in the form name=value">
+            <f:textarea name="globalProperties"/>
+        </f:entry>
+        <f:entry title="Project Properties" field="projectProperties" description="One per line in the form name=value">
+            <f:textarea name="projectProperties"/>
+        </f:entry>
+        <f:entry title="Additional Command Line" field="additionalCommandLine" description="One per line">
+            <f:textarea/>
+        </f:entry>
     </f:advanced>
 
 </j:jelly>

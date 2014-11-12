@@ -11,6 +11,10 @@ public class ParameterContainer {
     private int startupTimeOut;
     private boolean enableUsageStatistics;
     private boolean enableVirtRunnerOutput;
+    private String systemProperties;
+    private String globalProperties;
+    private String projectProperties;
+    private String additionalCommandLine;
 
     public String getVirtNames() {
         return virtNames;
@@ -50,6 +54,22 @@ public class ParameterContainer {
 
     public boolean isEnableVirtRunnerOutput() {
         return enableVirtRunnerOutput;
+    }
+
+    public String getSystemProperties() {
+        return systemProperties;
+    }
+
+    public String getGlobalProperties() {
+        return globalProperties;
+    }
+
+    public String getProjectProperties() {
+        return projectProperties;
+    }
+
+    public String getAdditionalCommandLine() {
+        return additionalCommandLine;
     }
 
     public static class Builder {
@@ -106,6 +126,25 @@ public class ParameterContainer {
 
         public Builder withEnableVirtRunnerOutput(boolean enableVirtRunnerOutput) {
             parameterContainer.enableVirtRunnerOutput = enableVirtRunnerOutput;
+            return this;
+        }
+
+        public Builder withSystemProperties(String systemProperties) {
+            parameterContainer.systemProperties = systemProperties;
+            return this;
+        }
+
+        public Builder withGlobalProperties(String globalProperties) {
+            parameterContainer.globalProperties = globalProperties;
+            return this;
+        }
+
+        public Builder withProjectProperties(String projectProperties) {
+            parameterContainer.projectProperties = projectProperties;
+            return this;
+        }
+        public Builder withAdditionalCommandLine(String additionalCommandLine) {
+            parameterContainer.additionalCommandLine = additionalCommandLine;
             return this;
         }
     }

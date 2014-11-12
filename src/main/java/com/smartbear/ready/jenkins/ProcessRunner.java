@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,19 +31,19 @@ public class ProcessRunner {
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
         List<String> parameters = new ArrayList<String>();
         parameters.addAll(Arrays.asList(java, "-cp", jar.getFile(), VIRT_RUNNER_CLASS));
-        if (StringUtils.isNotEmpty(params.getVirtNames())) {
+        if (StringUtils.isNotBlank(params.getVirtNames())) {
             parameters.addAll(Arrays.asList("-m", params.getVirtNames()));
         }
-        if (StringUtils.isNotEmpty(params.getPathToProjectFile())) {
+        if (StringUtils.isNotBlank(params.getPathToProjectFile())) {
             parameters.addAll(Arrays.asList("-p", params.getPathToProjectFile()));
         }
-        if (StringUtils.isNotEmpty(params.getProjectFilePassword())) {
+        if (StringUtils.isNotBlank(params.getProjectFilePassword())) {
             parameters.addAll(Arrays.asList("-x", params.getProjectFilePassword()));
         }
-        if (StringUtils.isNotEmpty(params.getPathToSettingsFile())) {
+        if (StringUtils.isNotBlank(params.getPathToSettingsFile())) {
             parameters.addAll(Arrays.asList("-s", params.getPathToSettingsFile()));
         }
-        if (StringUtils.isNotEmpty(params.getSettingsFilePassword())) {
+        if (StringUtils.isNotBlank(params.getSettingsFilePassword())) {
             parameters.addAll(Arrays.asList("-v", params.getSettingsFilePassword()));
         }
         if (params.isSaveAfterRun()) {
@@ -50,6 +51,14 @@ public class ProcessRunner {
         }
         if (!params.isEnableUsageStatistics()) {
             parameters.add("-O");
+        }
+        addProperties(parameters, "-D", params.getSystemProperties());
+        addProperties(parameters, "-G", params.getGlobalProperties());
+        addProperties(parameters, "-P", params.getProjectProperties());
+        if(StringUtils.isNotBlank(params.getAdditionalCommandLine())){
+            for (String additionalCommand : params.getAdditionalCommandLine().split("\n")) {
+                parameters.add(additionalCommand);
+            }
         }
         ProcessBuilder pb = new ProcessBuilder(parameters)
                 .redirectErrorStream(true)
@@ -114,6 +123,14 @@ public class ProcessRunner {
             }).start();
         }
         return process;
+    }
+
+    private void addProperties(List<String> parameters, String flag, String properties) {
+        if (StringUtils.isNotBlank(properties)) {
+            for (String property : properties.split("\n")) {
+                parameters.addAll(Arrays.asList(flag, property));
+            }
+        }
     }
 
     private String javaFrom(String... candidateJavaHomes) {

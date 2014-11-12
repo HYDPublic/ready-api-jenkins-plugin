@@ -11,6 +11,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -31,6 +32,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     private final int startupTimeOut;
     private final boolean enableUsageStatistics;
     private final boolean enableVirtRunnerOutput;
+    private final String systemProperties;
+    private final String globalProperties;
+    private final String projectProperties;
+    private final String additionalCommandLine;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
@@ -42,7 +47,11 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                       boolean saveAfterRun,
                                       int startupTimeOut,
                                       boolean enableUsageStatistics,
-                                      boolean enableVirtRunnerOutput) {
+                                      boolean enableVirtRunnerOutput,
+                                      String systemProperties,
+                                      String globalProperties,
+                                      String projectProperties,
+                                      String additionalCommandLine) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
         this.projectFilePassword = projectFilePassword;
@@ -52,6 +61,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         this.startupTimeOut = startupTimeOut;
         this.enableUsageStatistics = enableUsageStatistics;
         this.enableVirtRunnerOutput = enableVirtRunnerOutput;
+        this.systemProperties = systemProperties;
+        this.globalProperties = globalProperties;
+        this.projectProperties = projectProperties;
+        this.additionalCommandLine = additionalCommandLine;
     }
 
     /**
@@ -93,6 +106,22 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return enableVirtRunnerOutput;
     }
 
+    public String getSystemProperties() {
+        return systemProperties;
+    }
+
+    public String getGlobalProperties() {
+        return globalProperties;
+    }
+
+    public String getProjectProperties() {
+        return projectProperties;
+    }
+
+    public String getAdditionalCommandLine() {
+        return additionalCommandLine;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
         URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
@@ -115,6 +144,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                         .withStartupTimeOut(startupTimeOut)
                                         .withEnableUsageStatistics(enableUsageStatistics)
                                         .withEnableVirtRunnerOutput(enableVirtRunnerOutput)
+                                        .withSystemProperties(systemProperties)
+                                        .withGlobalProperties(globalProperties)
+                                        .withProjectProperties(projectProperties)
+                                        .withAdditionalCommandLine(additionalCommandLine)
                                         .build());
                 if (process == null) {
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
@@ -135,7 +168,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     }
 
     private String getAbsolutePath(String path, FilePath workspace) {
-        if (path == null) {
+        if (StringUtils.isBlank(path)) {
             return null;
         }
         File file = new File(path);
