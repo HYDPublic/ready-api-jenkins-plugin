@@ -17,6 +17,7 @@
     <packaging>hpi</packaging>
 
     <build>
+        <finalName>ready-api-jenkins-plugin-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
