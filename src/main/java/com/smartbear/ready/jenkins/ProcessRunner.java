@@ -24,20 +24,29 @@ public class ProcessRunner {
     public static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
-    public Process run(final PrintStream out, String pathToProjectFile, String virtNames, String projectFilePassword, String javaHome)
+    public Process run(final PrintStream out, ParameterContainer params)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
-        String java = javaFrom(javaHome, System.getenv("JAVA_HOME"));
+        String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
         List<String> parameters = new ArrayList<String>();
         parameters.addAll(Arrays.asList(java, "-cp", jar.getFile(), VIRT_RUNNER_CLASS));
-        if (StringUtils.isNotEmpty(virtNames)) {
-            parameters.addAll(Arrays.asList("-m", virtNames));
+        if (StringUtils.isNotEmpty(params.getVirtNames())) {
+            parameters.addAll(Arrays.asList("-m", params.getVirtNames()));
         }
-        if (StringUtils.isNotEmpty(pathToProjectFile)) {
-            parameters.addAll(Arrays.asList("-p", pathToProjectFile));
+        if (StringUtils.isNotEmpty(params.getPathToProjectFile())) {
+            parameters.addAll(Arrays.asList("-p", params.getPathToProjectFile()));
         }
-        if (StringUtils.isNotEmpty(projectFilePassword)) {
-            parameters.addAll(Arrays.asList("-x", projectFilePassword));
+        if (StringUtils.isNotEmpty(params.getProjectFilePassword())) {
+            parameters.addAll(Arrays.asList("-x", params.getProjectFilePassword()));
+        }
+        if (StringUtils.isNotEmpty(params.getPathToSettingsFile())) {
+            parameters.addAll(Arrays.asList("-s", params.getPathToSettingsFile()));
+        }
+        if (StringUtils.isNotEmpty(params.getSettingsFilePassword())) {
+            parameters.addAll(Arrays.asList("-v", params.getSettingsFilePassword()));
+        }
+        if (params.isSaveAfterRun()) {
+            parameters.add("-S");
         }
         ProcessBuilder pb = new ProcessBuilder(parameters)
                 .redirectErrorStream(true)
@@ -63,7 +72,7 @@ public class ProcessRunner {
         };
         final Future<Boolean> future = executor.submit(parseTask);
         try {
-            final Boolean allRunning = future.get(15, TimeUnit.SECONDS);
+            final Boolean allRunning = future.get(30, TimeUnit.SECONDS);
             if (!allRunning) {
                 process.destroy();
                 return null;

@@ -20,4 +20,16 @@
         <f:password/>
     </f:entry>
 
+    <f:advanced>
+        <f:entry title="Path to settings file" field="pathToSettingsFile">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="Settings file password" field="settingsFilePassword">
+            <f:password/>
+        </f:entry>
+        <f:entry title="Save after run" field="saveAfterRun">
+            <f:checkbox/>
+        </f:entry>
+    </f:advanced>
+
 </j:jelly>

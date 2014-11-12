@@ -25,13 +25,19 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     private final String virtNames;
     private final String pathToProjectFile;
     private final String projectFilePassword;
+    private final String pathToSettingsFile;
+    private final String settingsFilePassword;
+    private final boolean saveAfterRun;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword) {
+    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword, String pathToSettingsFile, String settingsFilePassword, boolean saveAfterRun) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
         this.projectFilePassword = projectFilePassword;
+        this.pathToSettingsFile = pathToSettingsFile;
+        this.settingsFilePassword = settingsFilePassword;
+        this.saveAfterRun = saveAfterRun;
     }
 
     /**
@@ -49,10 +55,20 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return projectFilePassword;
     }
 
+    public String getPathToSettingsFile() {
+        return pathToSettingsFile;
+    }
+
+    public String getSettingsFilePassword() {
+        return settingsFilePassword;
+    }
+
+    public boolean isSaveAfterRun() {
+        return saveAfterRun;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
-        listener.getLogger().println("Path to project file: " + pathToProjectFile + "");
-
         URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
 
         if (readyApiLibs == null) {
@@ -62,8 +78,16 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
             try {
                 process = new ProcessRunner()
                         .run(listener.getLogger(),
-                                getProjectPath(build.getWorkspace()), virtNames, projectFilePassword, getDescriptor().getJavaHome());
-                if(process == null){
+                                new ParameterContainer.Builder()
+                                        .withPathToProjectFile(getAbsolutePath(pathToProjectFile, build.getWorkspace()))
+                                        .withVirtNames(virtNames)
+                                        .withProjectFilePassword(projectFilePassword)
+                                        .withjavaHome(getDescriptor().getJavaHome())
+                                        .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build.getWorkspace()))
+                                        .withSettingsFilePassword(settingsFilePassword)
+                                        .withSaveAfterRun(saveAfterRun)
+                                        .build());
+                if (process == null) {
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
                 } else {
                     new ProcessKiller(process, build.getId(), getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
@@ -81,13 +105,16 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return true;
     }
 
-    private String getProjectPath(FilePath workspace) {
-        File file = new File(pathToProjectFile);
+    private String getAbsolutePath(String path, FilePath workspace) {
+        if (path == null) {
+            return null;
+        }
+        File file = new File(path);
         if (file.exists()) {
             return file.getAbsolutePath();
         }
         try {
-            file = new File(new File(workspace.toURI()), pathToProjectFile);
+            file = new File(new File(workspace.toURI()), path);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
