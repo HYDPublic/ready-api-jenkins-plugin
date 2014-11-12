@@ -9,6 +9,8 @@ public class ParameterContainer {
     private String settingsFilePassword;
     private boolean saveAfterRun;
     private int startupTimeOut;
+    private boolean enableUsageStatistics;
+    private boolean enableVirtRunnerOutput;
 
     public String getVirtNames() {
         return virtNames;
@@ -40,6 +42,14 @@ public class ParameterContainer {
 
     public int getStartupTimeOut() {
         return startupTimeOut;
+    }
+
+    public boolean isEnableUsageStatistics() {
+        return enableUsageStatistics;
+    }
+
+    public boolean isEnableVirtRunnerOutput() {
+        return enableVirtRunnerOutput;
     }
 
     public static class Builder {
@@ -86,6 +96,16 @@ public class ParameterContainer {
 
         public Builder withStartupTimeOut(int startupTimeOut) {
             parameterContainer.startupTimeOut = startupTimeOut;
+            return this;
+        }
+
+        public Builder withEnableUsageStatistics(boolean enableUsageStatistics) {
+            parameterContainer.enableUsageStatistics = enableUsageStatistics;
+            return this;
+        }
+
+        public Builder withEnableVirtRunnerOutput(boolean enableVirtRunnerOutput) {
+            parameterContainer.enableVirtRunnerOutput = enableVirtRunnerOutput;
             return this;
         }
     }

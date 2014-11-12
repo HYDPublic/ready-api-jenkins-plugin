@@ -24,7 +24,7 @@ public class ProcessRunner {
     public static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
-    public Process run(final PrintStream out, ParameterContainer params)
+    public Process run(final PrintStream out, final ParameterContainer params)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
@@ -48,10 +48,23 @@ public class ProcessRunner {
         if (params.isSaveAfterRun()) {
             parameters.add("-S");
         }
+        if (!params.isEnableUsageStatistics()) {
+            parameters.add("-O");
+        }
         ProcessBuilder pb = new ProcessBuilder(parameters)
                 .redirectErrorStream(true)
                 .directory(new File("."));
 
+        out.println("Starting ServiceV Virts process");
+        String lastParameter = null;
+        for (String parameter : parameters) {
+            if("-x".equals(lastParameter) || "-v".equals(lastParameter)){
+                parameter = "********";
+            }
+            out.print(parameter + " ");
+            lastParameter = parameter;
+        }
+        out.println();
         final Process process = pb.start();
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
@@ -60,7 +73,9 @@ public class ProcessRunner {
             public Boolean call() throws Exception {
                 String s;
                 while ((s = bufferedReader.readLine()) != null) {
-                    out.println(s);
+                    if (params.isEnableVirtRunnerOutput()) {
+                        out.println(s);
+                    }
                     if (s.contains("All runners confirmed to be running!")) {
                         return true;
                     } else if (s.contains("Failed to get all runners started! Problems may occur.")) {
@@ -84,18 +99,20 @@ public class ProcessRunner {
         } finally {
             executor.shutdown();
         }
-        new Thread(new Runnable() {
-            public void run() {
-                String s;
-                try {
-                    while ((s = bufferedReader.readLine()) != null) {
-                        out.println(s);
+        if (params.isEnableVirtRunnerOutput()) {
+            new Thread(new Runnable() {
+                public void run() {
+                    String s;
+                    try {
+                        while ((s = bufferedReader.readLine()) != null) {
+                            out.println(s);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace(out);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace(out);
                 }
-            }
-        }).start();
+            }).start();
+        }
         return process;
     }
 

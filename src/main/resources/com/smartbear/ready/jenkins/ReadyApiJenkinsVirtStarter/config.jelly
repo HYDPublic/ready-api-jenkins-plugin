@@ -33,6 +33,12 @@
         <f:entry title="Virt startup time-out" field="startupTimeOut" description="Number of seconds to wait for the Virt(s) to start up before failing the build.">
             <f:number default="30"/>
         </f:entry>
+        <f:entry title="Sends usage statistics" field="enableUsageStatistics">
+            <f:checkbox default="true"/>
+        </f:entry>
+        <f:entry title="Log VirtRunner output" field="enableVirtRunnerOutput" description="Print the output from the VirtRunner to the job's log.">
+            <f:checkbox/>
+        </f:entry>
     </f:advanced>
 
 </j:jelly>

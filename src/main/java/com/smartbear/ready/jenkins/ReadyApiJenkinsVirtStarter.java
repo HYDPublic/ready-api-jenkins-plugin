@@ -29,10 +29,20 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
     private final String settingsFilePassword;
     private final boolean saveAfterRun;
     private final int startupTimeOut;
+    private final boolean enableUsageStatistics;
+    private final boolean enableVirtRunnerOutput;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public ReadyApiJenkinsVirtStarter(String virtNames, String pathToProjectFile, String projectFilePassword, String pathToSettingsFile, String settingsFilePassword, boolean saveAfterRun, int startupTimeOut) {
+    public ReadyApiJenkinsVirtStarter(String virtNames,
+                                      String pathToProjectFile,
+                                      String projectFilePassword,
+                                      String pathToSettingsFile,
+                                      String settingsFilePassword,
+                                      boolean saveAfterRun,
+                                      int startupTimeOut,
+                                      boolean enableUsageStatistics,
+                                      boolean enableVirtRunnerOutput) {
         this.virtNames = virtNames;
         this.pathToProjectFile = pathToProjectFile;
         this.projectFilePassword = projectFilePassword;
@@ -40,6 +50,8 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         this.settingsFilePassword = settingsFilePassword;
         this.saveAfterRun = saveAfterRun;
         this.startupTimeOut = startupTimeOut;
+        this.enableUsageStatistics = enableUsageStatistics;
+        this.enableVirtRunnerOutput = enableVirtRunnerOutput;
     }
 
     /**
@@ -73,6 +85,14 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return startupTimeOut;
     }
 
+    public boolean isEnableUsageStatistics() {
+        return enableUsageStatistics;
+    }
+
+    public boolean isEnableVirtRunnerOutput() {
+        return enableVirtRunnerOutput;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
         URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
@@ -93,6 +113,8 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                         .withSettingsFilePassword(settingsFilePassword)
                                         .withSaveAfterRun(saveAfterRun)
                                         .withStartupTimeOut(startupTimeOut)
+                                        .withEnableUsageStatistics(enableUsageStatistics)
+                                        .withEnableVirtRunnerOutput(enableVirtRunnerOutput)
                                         .build());
                 if (process == null) {
                     throw new AbortException("Could not start ServiceV Virt(s) process.");
