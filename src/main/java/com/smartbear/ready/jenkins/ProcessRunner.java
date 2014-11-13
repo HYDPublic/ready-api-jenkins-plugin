@@ -30,7 +30,9 @@ public class ProcessRunner {
     public Process run(final PrintStream out, final ParameterContainer params)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
-        final File readyApiRunnersJar = new File(params.getWorkspace(), "ready-api-runners.jar");
+        final File readyDir = new File(params.getWorkspace(), "ready-api");
+        readyDir.mkdirs();
+        final File readyApiRunnersJar = new File(readyDir, "ready-api-runners.jar");
         IOUtils.copy(jar.openStream(), new FileOutputStream(readyApiRunnersJar));
 
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
@@ -67,7 +69,7 @@ public class ProcessRunner {
         }
         ProcessBuilder pb = new ProcessBuilder(processParameterList)
                 .redirectErrorStream(true)
-                .directory(params.getWorkspace());
+                .directory(readyDir);
 
         out.println("Starting ServiceV Virts process");
         String lastParameter = null;
