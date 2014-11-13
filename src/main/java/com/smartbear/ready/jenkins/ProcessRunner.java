@@ -1,9 +1,11 @@
 package com.smartbear.ready.jenkins;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -28,45 +30,48 @@ public class ProcessRunner {
     public Process run(final PrintStream out, final ParameterContainer params)
             throws IOException {
         URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
+        final File readyApiRunnersJar = new File(params.getWorkspace(), "ready-api-runners.jar");
+        IOUtils.copy(jar.openStream(), new FileOutputStream(readyApiRunnersJar));
+
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
-        List<String> parameters = new ArrayList<String>();
-        parameters.addAll(Arrays.asList(java, "-cp", jar.getFile(), VIRT_RUNNER_CLASS));
+        List<String> processParameterList = new ArrayList<String>();
+        processParameterList.addAll(Arrays.asList(java, "-cp", readyApiRunnersJar.getAbsolutePath(), VIRT_RUNNER_CLASS));
         if (StringUtils.isNotBlank(params.getVirtNames())) {
-            parameters.addAll(Arrays.asList("-m", params.getVirtNames()));
+            processParameterList.addAll(Arrays.asList("-m", params.getVirtNames()));
         }
         if (StringUtils.isNotBlank(params.getPathToProjectFile())) {
-            parameters.addAll(Arrays.asList("-p", params.getPathToProjectFile()));
+            processParameterList.addAll(Arrays.asList("-p", params.getPathToProjectFile()));
         }
         if (StringUtils.isNotBlank(params.getProjectFilePassword())) {
-            parameters.addAll(Arrays.asList("-x", params.getProjectFilePassword()));
+            processParameterList.addAll(Arrays.asList("-x", params.getProjectFilePassword()));
         }
         if (StringUtils.isNotBlank(params.getPathToSettingsFile())) {
-            parameters.addAll(Arrays.asList("-s", params.getPathToSettingsFile()));
+            processParameterList.addAll(Arrays.asList("-s", params.getPathToSettingsFile()));
         }
         if (StringUtils.isNotBlank(params.getSettingsFilePassword())) {
-            parameters.addAll(Arrays.asList("-v", params.getSettingsFilePassword()));
+            processParameterList.addAll(Arrays.asList("-v", params.getSettingsFilePassword()));
         }
         if (params.isSaveAfterRun()) {
-            parameters.add("-S");
+            processParameterList.add("-S");
         }
         if (!params.isEnableUsageStatistics()) {
-            parameters.add("-O");
+            processParameterList.add("-O");
         }
-        addProperties(parameters, "-D", params.getSystemProperties());
-        addProperties(parameters, "-G", params.getGlobalProperties());
-        addProperties(parameters, "-P", params.getProjectProperties());
+        addProperties(processParameterList, "-D", params.getSystemProperties());
+        addProperties(processParameterList, "-G", params.getGlobalProperties());
+        addProperties(processParameterList, "-P", params.getProjectProperties());
         if(StringUtils.isNotBlank(params.getAdditionalCommandLine())){
             for (String additionalCommand : params.getAdditionalCommandLine().split("\n")) {
-                parameters.add(additionalCommand);
+                processParameterList.add(additionalCommand);
             }
         }
-        ProcessBuilder pb = new ProcessBuilder(parameters)
+        ProcessBuilder pb = new ProcessBuilder(processParameterList)
                 .redirectErrorStream(true)
-                .directory(new File("."));
+                .directory(params.getWorkspace());
 
         out.println("Starting ServiceV Virts process");
         String lastParameter = null;
-        for (String parameter : parameters) {
+        for (String parameter : processParameterList) {
             if("-x".equals(lastParameter) || "-v".equals(lastParameter)){
                 parameter = "********";
             }

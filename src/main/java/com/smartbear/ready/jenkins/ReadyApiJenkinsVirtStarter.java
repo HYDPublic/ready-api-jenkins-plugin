@@ -148,6 +148,7 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
                                         .withGlobalProperties(globalProperties)
                                         .withProjectProperties(projectProperties)
                                         .withAdditionalCommandLine(additionalCommandLine)
+                                        .withWorkspace(new File(build.getWorkspace().toURI()))
                                         .build());
                 if (process == null) {
                     throw new AbortException("Could not start ServiceV Virt(s) process.");

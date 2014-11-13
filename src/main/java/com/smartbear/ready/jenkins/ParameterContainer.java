@@ -1,5 +1,7 @@
 package com.smartbear.ready.jenkins;
 
+import java.io.File;
+
 public class ParameterContainer {
     private String virtNames;
     private String pathToProjectFile;
@@ -15,6 +17,7 @@ public class ParameterContainer {
     private String globalProperties;
     private String projectProperties;
     private String additionalCommandLine;
+    private File workspace;
 
     public String getVirtNames() {
         return virtNames;
@@ -70,6 +73,10 @@ public class ParameterContainer {
 
     public String getAdditionalCommandLine() {
         return additionalCommandLine;
+    }
+
+    public File getWorkspace() {
+        return workspace;
     }
 
     public static class Builder {
@@ -145,6 +152,11 @@ public class ParameterContainer {
         }
         public Builder withAdditionalCommandLine(String additionalCommandLine) {
             parameterContainer.additionalCommandLine = additionalCommandLine;
+            return this;
+        }
+
+        public Builder withWorkspace(File workspace) {
+            parameterContainer.workspace = workspace;
             return this;
         }
     }
