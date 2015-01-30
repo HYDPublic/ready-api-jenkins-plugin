@@ -13,7 +13,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>ready-api-jenkins-plugin</artifactId>
-    <version>1.2.0-RC7</version>
+    <version>1.2.0-RC8</version>
     <packaging>hpi</packaging>
 
     <build>
@@ -35,7 +35,7 @@
                                 <artifactItem>
                                     <groupId>com.smartbear</groupId>
                                     <artifactId>ready-api-runners</artifactId>
-                                    <version>1.2.0-RC7</version>
+                                    <version>1.2.0-RC8</version>
                                     <classifier>jar-with-dependencies</classifier>
                                 </artifactItem>
                             </artifactItems>
