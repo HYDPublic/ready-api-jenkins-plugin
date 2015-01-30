@@ -41,9 +41,6 @@ public class ProcessRunner {
         if (StringUtils.isNotBlank(params.getVirtNames())) {
             processParameterList.addAll(Arrays.asList("-m", params.getVirtNames()));
         }
-        if (StringUtils.isNotBlank(params.getPathToProjectFile())) {
-            processParameterList.addAll(Arrays.asList("-p", params.getPathToProjectFile()));
-        }
         if (StringUtils.isNotBlank(params.getProjectFilePassword())) {
             processParameterList.addAll(Arrays.asList("-x", params.getProjectFilePassword()));
         }
@@ -66,6 +63,9 @@ public class ProcessRunner {
             for (String additionalCommand : params.getAdditionalCommandLine().split("\n")) {
                 processParameterList.add(additionalCommand);
             }
+        }
+        if (StringUtils.isNotBlank(params.getPathToProjectFile())) {
+            processParameterList.add(params.getPathToProjectFile());
         }
         ProcessBuilder pb = new ProcessBuilder(processParameterList)
                 .redirectErrorStream(true)
