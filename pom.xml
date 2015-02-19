@@ -13,7 +13,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>ready-api-jenkins-plugin</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>hpi</packaging>
 
     <build>
