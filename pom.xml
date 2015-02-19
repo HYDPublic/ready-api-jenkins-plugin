@@ -35,7 +35,7 @@
                                 <artifactItem>
                                     <groupId>com.smartbear</groupId>
                                     <artifactId>ready-api-runners</artifactId>
-                                    <version>1.2.0-SNAPSHOT</version>
+                                    <version>${project.version}</version>
                                     <classifier>jar-with-dependencies</classifier>
                                 </artifactItem>
                             </artifactItems>
