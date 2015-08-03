@@ -17,53 +17,80 @@
     <packaging>hpi</packaging>
 
     <build>
-        <finalName>ready-api-jenkins-plugin-${project.version}</finalName>
         <plugins>
-            <plugin>
+        <!--    <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
+                <version>2.10</version>
+                <configuration>
+                    <in
+                </configuration>
+            </plugin>-->
+            <!--<plugin>
+                <groupId>eu.numberfour.maven.plugins</groupId>
+                <artifactId>file-list-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <configuration>
+                    <baseDir>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/lib</baseDir>
+                    <outputFile>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/lib-list.json</outputFile>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>copy</id>
-                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>list</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <outputFile>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/classes/lib-list.txt</outputFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>list</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!--<plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.smartbear</groupId>
-                                    <artifactId>ready-api-runners</artifactId>
-                                    <version>${project.version}</version>
-                                    <classifier>jar-with-dependencies</classifier>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>src/main/generated-resources</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <stripVersion>true</stripVersion>
-                            <stripClassifier>true</stripClassifier>
+                            <outputDirectory>${project.build.directory}/ready-api-jenkins-plugin/WEB-INF/lib</outputDirectory>
+                            <excludeScope>test</excludeScope>
+                            <excludeScope>system</excludeScope>
+                            <excludeScope>provided</excludeScope>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>process-resources</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/classes/ready-api-libs</outputDirectory>
+                            <outputDirectory>${project.build.directory}/ready-api-jenkins-plugin/WEB-INF/lib</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/generated-resources</directory>
-                                    <filtering>false</filtering>
+                                    <directory>${basedir}-dependencies/target/dependencies</directory>
                                 </resource>
                             </resources>
                         </configuration>
