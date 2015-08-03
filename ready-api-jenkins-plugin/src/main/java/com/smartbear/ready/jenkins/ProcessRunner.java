@@ -26,12 +26,7 @@ public class ProcessRunner {
 
     public Process run(final PrintStream out, final ParameterContainer params)
             throws IOException, URISyntaxException {
-        final File readyDir = new File(params.getWorkspace(), "ready-api");
-        readyDir.mkdirs();
-//
-//        copyDependencies(readyDir);
         String libLocation = new File(ReadyApiJenkinsVirtStarter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-        out.println("libLocation: " + libLocation);
 
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
         List<String> processParameterList = new ArrayList<String>();
@@ -67,7 +62,7 @@ public class ProcessRunner {
         }
         ProcessBuilder pb = new ProcessBuilder(processParameterList)
                 .redirectErrorStream(true)
-                .directory(readyDir);
+                .directory(params.getWorkspace());
 
         out.println("Starting ServiceV Virts process");
         String lastParameter = null;
@@ -128,26 +123,6 @@ public class ProcessRunner {
             }).start();
         }
         return process;
-    }
-
-    private void copyDependencies(File readyDir) throws IOException {
-        /*URL libListUrl = ProcessRunner.class.getResource("/lib-list.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(libListUrl.openStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] split = line.split(":");
-            if (split.length == 5) {
-                String jarName = split[1] + "-" + split[3] + "." + split[2];
-                final File outputJarName = new File(readyDir, jarName);
-                URL jar = ProcessRunner.class.getResource("../lib/" + jarName);
-                System.out.println("Copy " + jar + " to " + outputJarName);
-                IOUtils.copy(jar.openStream(), new FileOutputStream(outputJarName));
-            }
-        }*/
-        //URL location = ReadyApiJenkinsVirtStarter.class.getProtectionDomain().getCodeSource().getLocation();
-
-        //listener.getLogger().println("location = " + location);
-
     }
 
     private void addProperties(List<String> parameters, String flag, String properties) {

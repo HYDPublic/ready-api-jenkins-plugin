@@ -18,64 +18,6 @@
 
     <build>
         <plugins>
-        <!--    <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <in
-                </configuration>
-            </plugin>-->
-            <!--<plugin>
-                <groupId>eu.numberfour.maven.plugins</groupId>
-                <artifactId>file-list-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <baseDir>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/lib</baseDir>
-                    <outputFile>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/lib-list.json</outputFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>list</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>-->
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <outputFile>${basedir}/target/ready-api-jenkins-plugin/WEB-INF/classes/lib-list.txt</outputFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>list</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions>
-            </plugin>-->
-            <!--<plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/ready-api-jenkins-plugin/WEB-INF/lib</outputDirectory>
-                            <excludeScope>test</excludeScope>
-                            <excludeScope>system</excludeScope>
-                            <excludeScope>provided</excludeScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
