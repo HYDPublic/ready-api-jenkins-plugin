@@ -17,6 +17,7 @@
     <packaging>hpi</packaging>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -29,7 +30,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/ready-api-jenkins-plugin/WEB-INF/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/lib</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}-dependencies/target/dependencies</directory>
