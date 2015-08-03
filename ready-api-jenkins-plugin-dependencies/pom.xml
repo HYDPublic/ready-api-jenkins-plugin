@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.smartbear</groupId>
+    <parent>
+        <groupId>com.smartbear</groupId>
+        <artifactId>ready-api-jenkins-plugin-parent</artifactId>
+        <version>1.4.0-RC4</version>
+    </parent>
+
     <artifactId>ready-api-jenkins-plugin-dependencies</artifactId>
-    <version>1.4.0-RC3</version>
 
     <dependencies>
         <dependency>
