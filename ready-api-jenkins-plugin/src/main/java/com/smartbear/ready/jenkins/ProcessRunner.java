@@ -1,20 +1,17 @@
 package com.smartbear.ready.jenkins;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,16 +25,12 @@ public class ProcessRunner {
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
     public Process run(final PrintStream out, final ParameterContainer params)
-            throws IOException {
-        URL jar = ProcessRunner.class.getResource("/ready-api-libs/ready-api-runners.jar");
-        final File readyDir = new File(params.getWorkspace(), "ready-api");
-        readyDir.mkdirs();
-        final File readyApiRunnersJar = new File(readyDir, "ready-api-runners.jar");
-        IOUtils.copy(jar.openStream(), new FileOutputStream(readyApiRunnersJar));
+            throws IOException, URISyntaxException {
+        String libLocation = new File(ReadyApiJenkinsVirtStarter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
 
         String java = javaFrom(params.getJavaHome(), System.getenv("JAVA_HOME"));
         List<String> processParameterList = new ArrayList<String>();
-        processParameterList.addAll(Arrays.asList(java, "-cp", readyApiRunnersJar.getAbsolutePath(), VIRT_RUNNER_CLASS));
+        processParameterList.addAll(Arrays.asList(java, "-cp", libLocation + File.separator + "*", VIRT_RUNNER_CLASS));
         if (StringUtils.isNotBlank(params.getVirtNames())) {
             processParameterList.addAll(Arrays.asList("-m", params.getVirtNames()));
         }
@@ -59,7 +52,7 @@ public class ProcessRunner {
         addProperties(processParameterList, "-D", params.getSystemProperties());
         addProperties(processParameterList, "-G", params.getGlobalProperties());
         addProperties(processParameterList, "-P", params.getProjectProperties());
-        if(StringUtils.isNotBlank(params.getAdditionalCommandLine())){
+        if (StringUtils.isNotBlank(params.getAdditionalCommandLine())) {
             for (String additionalCommand : params.getAdditionalCommandLine().split("\n")) {
                 processParameterList.add(additionalCommand);
             }
@@ -69,12 +62,12 @@ public class ProcessRunner {
         }
         ProcessBuilder pb = new ProcessBuilder(processParameterList)
                 .redirectErrorStream(true)
-                .directory(readyDir);
+                .directory(params.getWorkspace());
 
         out.println("Starting ServiceV Virts process");
         String lastParameter = null;
         for (String parameter : processParameterList) {
-            if("-x".equals(lastParameter) || "-v".equals(lastParameter)){
+            if ("-x".equals(lastParameter) || "-v".equals(lastParameter)) {
                 parameter = "********";
             }
             out.print(parameter + " ");

@@ -124,11 +124,10 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
-        URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
-
-        if (readyApiLibs == null) {
+        //URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
+        /*if (readyApiLibs == null) {
             listener.getLogger().println("ReadyApi Libs not found!");
-        } else {
+        } else*/ {
             Process process = null;
             try {
                 process = new ProcessRunner()
