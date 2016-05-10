@@ -82,7 +82,7 @@ public class ProcessRunner {
             public Boolean call() throws Exception {
                 String s;
                 while ((s = bufferedReader.readLine()) != null) {
-                    if (params.isEnableVirtRunnerOutput()) {
+                    if (params.isEnableVirtRunnerOutput() || s.contains("SvpException")) {
                         out.println(s);
                     }
                     if (s.contains("All runners confirmed to be running!")) {
