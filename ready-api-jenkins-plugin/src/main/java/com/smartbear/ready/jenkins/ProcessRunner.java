@@ -18,13 +18,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class ProcessRunner {
+import static java.util.Collections.addAll;
 
-    public static final String VIRT_RUNNER_CLASS = "com.smartbear.ready.cmd.runner.pro.CommandLineVirtRunner";
-    public static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
+class ProcessRunner {
+
+    private static final String VIRT_RUNNER_CLASS = "com.smartbear.ready.cmd.runner.pro.CommandLineVirtRunner";
+    static final String JAVA_PATH_FROM_JAVA_HOME = System.getProperty("os.name")
             .toLowerCase(Locale.ENGLISH).contains("windows") ? "jre/bin/java.exe" : "jre/bin/java";
 
-    public Process run(final PrintStream out, final ParameterContainer params)
+    Process run(final PrintStream out, final ParameterContainer params)
             throws IOException, URISyntaxException {
         String libLocation = new File(ReadyApiJenkinsVirtStarter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
 
@@ -53,9 +55,7 @@ public class ProcessRunner {
         addProperties(processParameterList, "-G", params.getGlobalProperties());
         addProperties(processParameterList, "-P", params.getProjectProperties());
         if (StringUtils.isNotBlank(params.getAdditionalCommandLine())) {
-            for (String additionalCommand : params.getAdditionalCommandLine().split("\n")) {
-                processParameterList.add(additionalCommand);
-            }
+            addAll(processParameterList, params.getAdditionalCommandLine().split("\n"));
         }
         if (StringUtils.isNotBlank(params.getPathToProjectFile())) {
             processParameterList.add(params.getPathToProjectFile());
@@ -82,7 +82,7 @@ public class ProcessRunner {
             public Boolean call() throws Exception {
                 String s;
                 while ((s = bufferedReader.readLine()) != null) {
-                    if (params.isEnableVirtRunnerOutput()) {
+                    if (params.isEnableVirtRunnerOutput() || s.contains("SvpException")) {
                         out.println(s);
                     }
                     if (s.contains("All runners confirmed to be running!")) {
