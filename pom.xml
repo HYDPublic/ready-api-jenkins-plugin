@@ -6,7 +6,7 @@
 
     <groupId>com.smartbear</groupId>
     <artifactId>ready-api-jenkins-plugin-parent</artifactId>
-    <version>1.8.5-RC5</version>
+    <version>1.8.5</version>
     <packaging>pom</packaging>
 
     <modules>
