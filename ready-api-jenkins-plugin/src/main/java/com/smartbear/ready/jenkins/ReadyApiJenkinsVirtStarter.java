@@ -2,8 +2,8 @@ package com.smartbear.ready.jenkins;
 
 import hudson.AbortException;
 import hudson.Extension;
-import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -19,8 +19,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
+@SuppressWarnings("unused")
 public class ReadyApiJenkinsVirtStarter extends Builder {
 
     private final String virtNames;
@@ -124,59 +124,59 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws AbortException {
-        //URL readyApiLibs = ReadyApiJenkinsVirtStarter.class.getResource("/ready-api-libs/ready-api-runners.jar");
-        /*if (readyApiLibs == null) {
-            listener.getLogger().println("ReadyApi Libs not found!");
-        } else*/ {
-            Process process = null;
-            try {
-                process = new ProcessRunner()
-                        .run(listener.getLogger(),
-                                new ParameterContainer.Builder()
-                                        .withPathToProjectFile(getAbsolutePath(pathToProjectFile, build.getWorkspace()))
-                                        .withVirtNames(virtNames)
-                                        .withProjectFilePassword(projectFilePassword)
-                                        .withjavaHome(getDescriptor().getJavaHome())
-                                        .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build.getWorkspace()))
-                                        .withSettingsFilePassword(settingsFilePassword)
-                                        .withSaveAfterRun(saveAfterRun)
-                                        .withStartupTimeOut(startupTimeOut)
-                                        .withEnableUsageStatistics(enableUsageStatistics)
-                                        .withEnableVirtRunnerOutput(enableVirtRunnerOutput)
-                                        .withSystemProperties(systemProperties)
-                                        .withGlobalProperties(globalProperties)
-                                        .withProjectProperties(projectProperties)
-                                        .withAdditionalCommandLine(additionalCommandLine)
-                                        .withWorkspace(new File(build.getWorkspace().toURI()))
-                                        .build());
-                if (process == null) {
-                    throw new AbortException("Could not start ServiceV Virt(s) process.");
-                } else {
-                    new ProcessKiller(process, build.getId(), getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
-                            .killAfterTimeout();
-                    ProcessKeeper.addProcess(build.getId(), process);
-                }
-            } catch (Exception e) {
-                e.printStackTrace(listener.getLogger());
-                if (process != null) {
-                    process.destroy();
-                }
-                throw new AbortException("Could not start ServiceV Virt(s).");
+        Process process = null;
+        try {
+            process = new ProcessRunner()
+                    .run(listener.getLogger(),
+                            new ParameterContainer.Builder()
+                                    .withPathToProjectFile(getAbsolutePath(pathToProjectFile, build))
+                                    .withVirtNames(virtNames)
+                                    .withProjectFilePassword(projectFilePassword)
+                                    .withjavaHome(getDescriptor().getJavaHome())
+                                    .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build))
+                                    .withSettingsFilePassword(settingsFilePassword)
+                                    .withSaveAfterRun(saveAfterRun)
+                                    .withStartupTimeOut(startupTimeOut)
+                                    .withEnableUsageStatistics(enableUsageStatistics)
+                                    .withEnableVirtRunnerOutput(enableVirtRunnerOutput)
+                                    .withSystemProperties(systemProperties)
+                                    .withGlobalProperties(globalProperties)
+                                    .withProjectProperties(projectProperties)
+                                    .withAdditionalCommandLine(additionalCommandLine)
+                                    .withWorkspace(new File(build.getWorkspace().toURI()))
+                                    .build());
+            if (process == null) {
+                throw new AbortException("Could not start ServiceV Virt(s) process.");
+            } else {
+                new ProcessKiller(process, build.getId(), getDescriptor().getVirtRunnerTimeout() * 1000L, listener.getLogger())
+                        .killAfterTimeout();
+                ProcessKeeper.addProcess(build.getId(), process);
             }
+        } catch (Exception e) {
+            e.printStackTrace(listener.getLogger());
+            if (process != null) {
+                process.destroy();
+            }
+            throw new AbortException("Could not start ServiceV Virt(s).");
         }
         return true;
     }
 
-    private String getAbsolutePath(String path, FilePath workspace) {
+    private String getAbsolutePath(String path, AbstractBuild build) {
         if (StringUtils.isBlank(path)) {
             return null;
         }
-        File file = new File(path);
+        File file;
+        try {
+            file = new File(Util.replaceMacro(path, build.getEnvironment()));
+        } catch (Exception e) {
+            file = new File(path);
+        }
         if (file.exists()) {
             return file.getAbsolutePath();
         }
         try {
-            file = new File(new File(workspace.toURI()), path);
+            file = new File(new File(build.getWorkspace().toURI()), path);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -269,12 +269,8 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            // To persist global configuration information,
-            // set that to properties and call save().
             javaHome = formData.getString("javaHome");
             virtRunnerTimeout = formData.getLong("virtRunnerTimeout");
-            // ^Can also use req.bindJSON(this, formData);
-            //  (easier when there are many fields; need set* methods for this, like setUseFrench)
 
             save();
             return super.configure(req, formData);
