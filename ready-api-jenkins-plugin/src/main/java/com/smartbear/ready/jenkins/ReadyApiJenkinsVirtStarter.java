@@ -129,11 +129,11 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
             process = new ProcessRunner()
                     .run(listener.getLogger(),
                             new ParameterContainer.Builder()
-                                    .withPathToProjectFile(getAbsolutePath(pathToProjectFile, build))
+                                    .withPathToProjectFile(getAbsolutePath(pathToProjectFile, build, listener))
                                     .withVirtNames(virtNames)
                                     .withProjectFilePassword(projectFilePassword)
                                     .withjavaHome(getDescriptor().getJavaHome())
-                                    .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build))
+                                    .withPathToSettingsFile(getAbsolutePath(pathToSettingsFile, build, listener))
                                     .withSettingsFilePassword(settingsFilePassword)
                                     .withSaveAfterRun(saveAfterRun)
                                     .withStartupTimeOut(startupTimeOut)
@@ -162,13 +162,13 @@ public class ReadyApiJenkinsVirtStarter extends Builder {
         return true;
     }
 
-    private String getAbsolutePath(String path, AbstractBuild build) {
+    private String getAbsolutePath(String path, AbstractBuild build, BuildListener buildListener) {
         if (StringUtils.isBlank(path)) {
             return null;
         }
         File file;
         try {
-            file = new File(Util.replaceMacro(path, build.getEnvironment()));
+            file = new File(Util.replaceMacro(path, build.getEnvironment(buildListener)));
         } catch (Exception e) {
             file = new File(path);
         }
