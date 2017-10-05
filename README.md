@@ -1,6 +1,6 @@
-# Ready! API Jenkins Plugin
+# ReadyAPI Jenkins Plugin
 
-This is the Ready! API Jenkins Plugin code repository.
+This is the ReadyAPI Jenkins Plugin code repository.
 
 For help developing Jenkins plugins in general, see the [Jenkins plugin tutorial](https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial).
 

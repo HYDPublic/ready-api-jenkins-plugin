@@ -11,7 +11,7 @@
     tags they use. Views are always organized according to its owner class,
     so it should be straightforward to find them.
   -->
-  <f:section title="Ready! API Jenkins Plugin">
+  <f:section title="ReadyAPI Jenkins Plugin">
     <f:entry title="Java Home" field="javaHome"
       description="Set the path to the Java Home (eg. '/usr/lib/java/jre-1.7_64').
         If not set, the environment variable JAVA_HOME will be used, if it exists.

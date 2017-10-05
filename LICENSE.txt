@@ -1,9 +1,9 @@
 ﻿-----------------
-Ready! API Jenkins Plugin, copyright (C) 2014-2015 smartbear.com
+ReadyAPI Jenkins Plugin, copyright (C) 2014-2015 smartbear.com
 Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent
 versions of the EUPL (the "Licence");
 You may not use this work except in compliance with the Licence.
-Ready! API Jenkins Plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ReadyAPI Jenkins Plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 -----------------
 European Union Public Licence V. 1.1
 EUPL © the European Community 2007

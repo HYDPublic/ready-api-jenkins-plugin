@@ -2,5 +2,5 @@
   This view is used to render the installed plugins page.
 -->
 <div>
-  The Ready! API Plugin can be used to start and stop ServiceV Virts during your builds.
+  The ReadyAPI Plugin can be used to start and stop ServiceV Virts during your builds.
 </div>

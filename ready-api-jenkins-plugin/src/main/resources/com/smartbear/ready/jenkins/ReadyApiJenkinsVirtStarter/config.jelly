@@ -14,7 +14,7 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="Path to project file" field="pathToProjectFile"
-             description="Specify the path or URL to your Ready! API (or SoapUI) project file which contains the Virt(s) you wish to use.">
+             description="Specify the path or URL to your ReadyAPI (or SoapUI) project file which contains the Virt(s) you wish to use.">
         <f:textbox/>
     </f:entry>
     <f:entry title="Project file password" field="projectFilePassword"
@@ -25,7 +25,7 @@
     <f:advanced>
         <f:section title="Advanced ServiceV Options">
             <f:entry title="Path to settings file" field="pathToSettingsFile"
-                     description="Specify the path or URL to your Ready! API (or SoapUI) settings file if the default path shouldn't be used.">
+                     description="Specify the path or URL to your ReadyAPI (or SoapUI) settings file if the default path shouldn't be used.">
                 <f:textbox/>
             </f:entry>
             <f:entry title="Settings file password" field="settingsFilePassword"
